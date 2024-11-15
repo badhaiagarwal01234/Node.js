@@ -1,32 +1,32 @@
 const express = require("express")
 const mongoose = require("mongoose")
+require("dotenv").config()
 
 const app = express();
-const PORT = 8080;
+const Port = process.env.Port || 6080
 
-const MONGODBURL = 'mongodb://localhost:27017/batch';
+app.use(express.json());
+app.use(express.urlencoded({extended:true}))
 
+const userRouter = require('./Route/UserRoute')
+app.use('/abc', userRouter)
 
-mongoose.connect(MONGODBURL)
+mongoose.connect(process.env.MONGODBURL)
 .then(()=>{
-    console.log("Connected to MongoDB", MONGODBURL)
+    console.log("Connected to MongoDB", process.env.MONGODBURL)
 }).catch((error)=>{
     console.log("Error connecting to MongoDB", error)
 })
 
-const sales = new mongoose.Schema({
 
-})
 
-const salesData = mongoose.model('sales', sales)
-
-app.get('/findAll',  async(req,res)=>{
+app.get('/findAll', async(req,res)=>{
     
     const mySalesData = await salesData.find();
     res.status(200).json(mySalesData);
   })
 
-app.get('/getOne/:id',  async(req,res)=>{
+app.get('/getOne/:id', async(req,res)=>{
   console.log(`>>>>>>>req.params>>>>>>>`,req.params);
   const {id} = req.params;
   
@@ -73,8 +73,8 @@ app.get('/getRecord/:amount', async(req,res)=>{
     res.status(200).json(getByAmount);
   })
 
-app.listen(PORT ,()=>{
-  console.log(`server start to port ${PORT}`)
+app.listen(Port ,()=>{
+  console.log(`server start to port ${Port}`)
 })
 
 
